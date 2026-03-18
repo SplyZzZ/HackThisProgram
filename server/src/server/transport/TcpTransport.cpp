@@ -25,7 +25,7 @@ namespace server::transport {
 
         while (true) {
             auto pos = incoming_.find('\n');
-            
+
             if (pos == std::string::npos)
                 break;
 
@@ -33,7 +33,16 @@ namespace server::transport {
             incoming_.erase(0, pos+1);
         }
     }
-    void TCPTransport::asyncWrite(const std::string &data, std::function<void()> handler) {
+    void TCPTransport::asyncWrite( std::string data, std::function<void()> handler)
+    {
+        auto self = shared_from_this();
 
+        boost::asio::async_write(socket_, boost::asio::buffer(data),[self, data = std::move(data), handler = std::move(handler)]
+            (const boost::system::error_code& ec, std::size_t)
+            {
+                if (!ec && handler)
+                    handler();
+            }
+        );
     }
 }

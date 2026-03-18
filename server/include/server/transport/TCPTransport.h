@@ -7,7 +7,7 @@ namespace server::transport {
     public:
         TCPTransport(boost::asio::ip::tcp::socket&& socket);
         void asyncRead( const std::function<void(const std::string &)>& handler) override;
-        void asyncWrite(const std::string &data, std::function<void()> handler) override;
+        void asyncWrite(std::string data, std::function<void()> handler) override;
         void processMessage(const std::function<void(const std::string&)>& handler);
     private:
         boost::asio::ip::tcp::socket socket_;
